@@ -18,11 +18,27 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for GlobalExceptionHandler.
+ * Contains unit tests for verifying the proper handling of different types of exceptions
+ * and the generation of appropriate error responses.
+ *
+ * @author Marcelo Alejandro Albarracín
+ * @email marceloalejandro.albarracin@gmail.com
+ * @version 1.0.0
+ * @since 2024-03-19
+ */
 class GlobalExceptionHandlerTest {
 
     private GlobalExceptionHandler exceptionHandler;
     private MethodParameter methodParameter;
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes the exception handler and method parameter for validation tests.
+     *
+     * @throws NoSuchMethodException if the setUp method cannot be found
+     */
     @BeforeEach
     void setUp() throws NoSuchMethodException {
         exceptionHandler = new GlobalExceptionHandler();
@@ -30,6 +46,10 @@ class GlobalExceptionHandlerTest {
         methodParameter = new MethodParameter(method, -1);
     }
 
+    /**
+     * Tests handling of UserException.
+     * Verifies that the handler returns a BAD_REQUEST status with appropriate error details.
+     */
     @Test
     void handleUserException_ShouldReturnBadRequest() {
         // Arrange
@@ -50,6 +70,11 @@ class GlobalExceptionHandlerTest {
         assertNotNull(errorResponse.getTimestamp());
     }
 
+    /**
+     * Tests handling of validation exceptions.
+     * Verifies that the handler properly processes field validation errors
+     * and returns a BAD_REQUEST status with validation details.
+     */
     @Test
     void handleValidationException_ShouldReturnBadRequest() {
         // Arrange
@@ -84,6 +109,10 @@ class GlobalExceptionHandlerTest {
         assertNotNull(errorResponse.getTimestamp());
     }
 
+    /**
+     * Tests that UserException handling includes a timestamp.
+     * Verifies that the error response contains a valid and recent timestamp.
+     */
     @Test
     void handleUserException_ShouldIncludeTimestamp() {
         // Arrange
@@ -98,6 +127,11 @@ class GlobalExceptionHandlerTest {
         assertTrue(response.getBody().getTimestamp().isBefore(response.getBody().getTimestamp().plusSeconds(1)));
     }
 
+    /**
+     * Tests handling of multiple validation errors.
+     * Verifies that the handler properly processes and combines multiple field errors
+     * into a single error response.
+     */
     @Test
     void handleValidationException_WithMultipleErrors() {
         // Arrange

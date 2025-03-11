@@ -1,13 +1,14 @@
 # Banking Users Service
 
-## Project Overview
-The Banking Users Service is a microservice within the WhatsApp Banking system designed to manage user data and interactions. This service handles user registration, authentication, and profile management using Spring Boot 3, Java 21, MongoDB, and WebFlux.
+Microservice for banking system user management.
 
-## Features
-- User Registration
-- User Authentication
-- Profile Management
-- Integration with WhatsApp Banking
+## 🚀 Features
+- Reactive REST API using Spring WebFlux
+- MongoDB integration for data persistence
+- Complete CRUD operations for user management
+- Input validation and error handling
+- Swagger/OpenAPI documentation
+- Unit testing with JUnit 5 and WebTestClient
 
 ## Technologies Used
 | Technology         |
@@ -18,7 +19,63 @@ The Banking Users Service is a microservice within the WhatsApp Banking system d
 | ![Maven](https://img.shields.io/badge/Maven-3.6.3-C71A36?logo=apache-maven&logoColor=white)              |
 | ![Docker](https://img.shields.io/badge/Docker-20.10.7-2496ED?logo=docker&logoColor=white)              |
 
-## Getting Started
+
+## Configuration
+
+### 1. Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+# Service Port
+SERVER_PORT_USERS=8081
+
+# MongoDB Configuration
+MONGODB_HOST=mongodb
+MONGODB_PORT=27017
+MONGODB_DATABASE=banking
+MONGODB_USERNAME=root
+MONGODB_PASSWORD=example
+```
+
+### 2. Application.yml Configuration
+
+File location: `src/main/resources/application.yml`
+
+```yaml
+server:
+  port: ${SERVER_PORT_USERS}
+  servlet:
+    context-path: /banking-users-service
+
+spring:
+  application:
+    name: banking-users-service
+  data:
+    mongodb:
+      host: ${MONGODB_HOST}
+      port: ${MONGODB_PORT}
+      database: ${MONGODB_DATABASE}
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      authentication-database: admin
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    path: /api-docs
+    enabled: true
+
+logging:
+  level:
+    io.banking.whatsapp: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.web: DEBUG
+```
+
+## Installation & Deployment
 
 ### Prerequisites
 - Java 21
@@ -47,8 +104,108 @@ The Banking Users Service is a microservice within the WhatsApp Banking system d
 ### API Endpoints
  Refer to the ***Banking_Users_Service.postman_collection.json*** file for detailed API endpoint information.
 
-## Support
-Do you like the content I share? Buy me a coffee to help me keep creating. Thank you for your support!
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-F7DF1E?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/malbarracin)
+### Main Endpoints
+
+1. **Create User**
+   - URL: `/api/v1/users`
+   - Method: POST
+   - Swagger: [Create User](http://localhost:8081/banking-users-service/webjars/swagger-ui/index.html#/Users/createUser)
+
+2. **Get User by ID**
+   - URL: `/api/v1/users/{id}`
+   - Method: GET
+   - Swagger: [Get User](http://localhost:8081/banking-users-service/webjars/swagger-ui/index.html#/Users/getUserById)
+
+3. **Get User by DNI**
+   - URL: `/api/v1/users/dni/{dni}`
+   - Method: GET
+   - Swagger: [Get by DNI](http://localhost:8081/banking-users-service/webjars/swagger-ui/index.html#/Users/getUserByDni)
+
+4. **Update User**
+   - URL: `/api/v1/users/{id}`
+   - Method: PUT
+   - Swagger: [Update User](http://localhost:8081/banking-users-service/webjars/swagger-ui/index.html#/Users/updateUser)
+
+5. **Delete User**
+   - URL: `/api/v1/users/{id}`
+   - Method: DELETE
+   - Swagger: [Delete User](http://localhost:8081/banking-users-service/webjars/swagger-ui/index.html#/Users/deleteUser)
+
+## Troubleshooting
+
+1. **MongoDB Connection Issues:**
+   - Verify credentials in `.env`
+   - Check if MongoDB container is running
+   - Review MongoDB logs: `docker-compose logs mongodb`
+
+2. **Service Start Issues:**
+   - Verify port 8081 is available
+   - Check service logs: `docker-compose logs app`
+   - Verify environment variables in `.env`
+
+### Docker Deployment
+
+1. **Start Services**
+```bash
+# Build and start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# View specific service logs
+docker-compose logs -f app
+docker-compose logs -f mongodb
+```
+
+2. **Stop Services**
+```bash
+# Stop services
+docker-compose down
+
+# Stop services and remove volumes
+docker-compose down -v
+```
+
+3. **Verify Deployment**
+```bash
+# Check running containers
+docker-compose ps
+
+# Test service health
+curl http://localhost:8081/banking-users-service/actuator/health
+```
+
+## 📚 API Documentation
+
+Access Swagger UI: http://localhost:8081/banking-users-service/webjars/swagger-ui/index.html#/Users/createUser
+
+
+## 🧪 Running Tests
+
+Run all tests:
+```bash
+mvn test
+```
+
+Run specific test class:
+```bash
+mvn test -Dtest=UserControllerTest
+```
+
+
+
+## Docker Hub
+
+Service image is available on Docker Hub:
+```bash
+docker pull marceloalbarracin/banking-users-service:1.0.20
+```
+
+## Author
+Marcelo Alejandro Albarracín
+marceloalejandro.albarracin@gmail.com
+
+
 
 

@@ -59,3 +59,11 @@ spring.log
 # Others
 *.swp
 *~
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Pero permitir el ejemplo
+!.env.example

@@ -21,6 +21,16 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Test class for UserServiceImpl.
+ * Contains unit tests for verifying the business logic implementation
+ * of the user service layer using reactive programming.
+ *
+ * @author Marcelo Alejandro Albarracín
+ * @email marceloalejandro.albarracin@gmail.com
+ * @version 1.0.0
+ * @since 2024-03-19
+ */
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
@@ -37,6 +47,10 @@ class UserServiceImplTest {
     private UserRequestDTO userRequestDTO;
     private UserResponseDTO userResponseDTO;
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes test data including User entity, request DTO, and response DTO.
+     */
     @BeforeEach
     void setUp() {
         LocalDateTime now = LocalDateTime.now();
@@ -53,14 +67,26 @@ class UserServiceImplTest {
                 .build();
 
         userRequestDTO = new UserRequestDTO();
-        // Set necessary fields for userRequestDTO
+        userRequestDTO.setFirstName("John");
+        userRequestDTO.setLastName("Doe");
+        userRequestDTO.setEmail("john.doe@example.com");
+        userRequestDTO.setPhoneNumber("+1234567890");
+        userRequestDTO.setDni("12345678");
 
         userResponseDTO = new UserResponseDTO();
         userResponseDTO.setId("1");
+        userResponseDTO.setFirstName("John");
+        userResponseDTO.setLastName("Doe");
+        userResponseDTO.setEmail("john.doe@example.com");
+        userResponseDTO.setPhoneNumber("+1234567890");
         userResponseDTO.setDni("12345678");
-        // Set other necessary fields for userResponseDTO
+        userResponseDTO.setStatus("ACTIVE");
     }
 
+    /**
+     * Tests successful user creation.
+     * Verifies that the service properly maps and saves a new user.
+     */
     @Test
     void createUser_Success() {
         when(userMapper.toEntity(any(UserRequestDTO.class))).thenReturn(user);
@@ -76,6 +102,10 @@ class UserServiceImplTest {
         verify(userMapper).toDto(user);
     }
 
+    /**
+     * Tests successful user retrieval by ID.
+     * Verifies that the service properly retrieves and maps an existing user.
+     */
     @Test
     void getUserById_Success() {
         when(userRepository.findById("1")).thenReturn(Mono.just(user));
@@ -89,6 +119,10 @@ class UserServiceImplTest {
         verify(userMapper).toDto(user);
     }
 
+    /**
+     * Tests user retrieval by ID when user is not found.
+     * Verifies that the service properly handles the not found scenario.
+     */
     @Test
     void getUserById_NotFound() {
         when(userRepository.findById("1")).thenReturn(Mono.empty());
@@ -101,6 +135,10 @@ class UserServiceImplTest {
         verify(userMapper, never()).toDto(any());
     }
 
+    /**
+     * Tests successful user retrieval by DNI.
+     * Verifies that the service properly retrieves and maps a user by DNI.
+     */
     @Test
     void getUserByDni_Success() {
         when(userRepository.findByDni("12345678")).thenReturn(Mono.just(user));
@@ -114,6 +152,10 @@ class UserServiceImplTest {
         verify(userMapper).toDto(user);
     }
 
+    /**
+     * Tests user retrieval by DNI when user is not found.
+     * Verifies that the service properly handles the not found scenario.
+     */
     @Test
     void getUserByDni_NotFound() {
         when(userRepository.findByDni("12345678")).thenReturn(Mono.empty());
@@ -126,6 +168,10 @@ class UserServiceImplTest {
         verify(userMapper, never()).toDto(any());
     }
 
+    /**
+     * Tests successful retrieval of all users.
+     * Verifies that the service properly retrieves and maps multiple users.
+     */
     @Test
     void getAllUsers_Success() {
         when(userRepository.findAll()).thenReturn(Flux.just(user));
@@ -139,24 +185,15 @@ class UserServiceImplTest {
         verify(userMapper).toDto(user);
     }
 
+    /**
+     * Tests successful user update.
+     * Verifies that the service properly updates and saves existing user data.
+     */
     @Test
     void updateUser_Success() {
-        LocalDateTime now = LocalDateTime.now();
-        User updatedUser = User.builder()
-                .id("1")
-                .dni("12345678")
-                .firstName("John")
-                .lastName("Doe")
-                .email("john.doe@example.com")
-                .phoneNumber("+1234567890")
-                .status("ACTIVE")
-                .createdAt(user.getCreatedAt())
-                .updatedAt(now)
-                .build();
-
         when(userRepository.findById("1")).thenReturn(Mono.just(user));
-        when(userMapper.toEntity(any(UserRequestDTO.class))).thenReturn(updatedUser);
-        when(userRepository.save(any(User.class))).thenReturn(Mono.just(updatedUser));
+        when(userMapper.toEntity(any(UserRequestDTO.class))).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenReturn(Mono.just(user));
         when(userMapper.toDto(any(User.class))).thenReturn(userResponseDTO);
 
         StepVerifier.create(userService.updateUser("1", userRequestDTO))
@@ -166,16 +203,70 @@ class UserServiceImplTest {
         verify(userRepository).findById("1");
         verify(userMapper).toEntity(userRequestDTO);
         verify(userRepository).save(any(User.class));
-        verify(userMapper).toDto(updatedUser);
+        verify(userMapper).toDto(any(User.class));
     }
 
+    /**
+     * Tests update user when user is not found.
+     * Verifies that the service properly handles the not found scenario during update.
+     */
     @Test
-    void deleteUser_Success() {
-        when(userRepository.deleteById("1")).thenReturn(Mono.empty());
+    void updateUser_NotFound() {
+        when(userRepository.findById("1")).thenReturn(Mono.empty());
 
-        StepVerifier.create(userService.deleteUser("1"))
+        StepVerifier.create(userService.updateUser("1", userRequestDTO))
+                .expectError(NotFoundException.class)
+                .verify();
+
+        verify(userRepository).findById("1");
+        verify(userMapper, never()).toEntity(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    /**
+     * Test successful user deletion when the user exists.
+     */
+    @Test
+    void deleteUser_WhenUserExists_ShouldDelete() {
+        String userId = "existingId";
+        User existingUser = User.builder()
+            .id(userId)
+            .firstName("John")
+            .lastName("Doe")
+            .email("john.doe@example.com")
+            .phoneNumber("+1234567890")
+            .dni("12345678")
+            .status("ACTIVE")
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .build();
+
+        when(userRepository.findById(userId)).thenReturn(Mono.just(existingUser));
+        when(userRepository.deleteById(userId)).thenReturn(Mono.empty());
+
+        StepVerifier.create(userService.deleteUser(userId))
                 .verifyComplete();
 
-        verify(userRepository).deleteById("1");
+        verify(userRepository).findById(userId);
+        verify(userRepository).deleteById(userId);
+    }
+
+    /**
+     * Test user deletion when the user doesn't exist, should throw NotFoundException.
+     */
+    @Test
+    void deleteUser_WhenUserNotExists_ShouldThrowNotFoundException() {
+        String userId = "nonExistingId";
+        
+        when(userRepository.findById(userId)).thenReturn(Mono.empty());
+
+        StepVerifier.create(userService.deleteUser(userId))
+                .expectErrorMatches(throwable -> 
+                    throwable instanceof NotFoundException &&
+                    throwable.getMessage().equals("User not found with ID: " + userId))
+                .verify();
+
+        verify(userRepository).findById(userId);
+        verify(userRepository, never()).deleteById(userId);
     }
 } 

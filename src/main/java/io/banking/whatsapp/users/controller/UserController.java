@@ -13,18 +13,36 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * REST Controller for managing User operations.
+ * This controller provides endpoints for CRUD operations on users in the banking WhatsApp system.
+ *
+* @author Marcelo Alejandro Albarracín
+ * @email marceloalejandro.albarracin@gmail.com
+ * @version 1.0.0
+ * @since 2024-03-19
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "User management APIs")
 public class UserController {
     private final UserService userService;
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
+    /**
+     * Creates a new user.
+     *
+     * @param request The user data to create
+     * @return The created user information
+     */
     @Operation(summary = "Create a new user", description = "Creates a new user with the provided information")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "User created successfully",
@@ -38,6 +56,12 @@ public class UserController {
         return userService.createUser(request);
     }
 
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param id The ID of the user to retrieve
+     * @return The user information if found
+     */
     @Operation(summary = "Get user by ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User found",
@@ -52,6 +76,11 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    /**
+     * Retrieves all users in the system.
+     *
+     * @return A flux of all users
+     */
     @Operation(summary = "Get all users")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "List of users found")
@@ -61,6 +90,13 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    /**
+     * Updates an existing user.
+     *
+     * @param id The ID of the user to update
+     * @param request The updated user data
+     * @return The updated user information
+     */
     @Operation(summary = "Update user")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User updated successfully",
@@ -76,6 +112,12 @@ public class UserController {
         return userService.updateUser(id, request);
     }
 
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id The ID of the user to delete
+     * @return A Mono<Void> when completed
+     */
     @Operation(summary = "Delete user")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "User deleted successfully"),
@@ -90,6 +132,12 @@ public class UserController {
         return userService.deleteUser(id);
     }
 
+    /**
+     * Retrieves a user by their DNI (National ID).
+     *
+     * @param dni The DNI of the user to retrieve
+     * @return The user information if found
+     */
     @Operation(summary = "Get user by DNI")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User found",
@@ -101,6 +149,8 @@ public class UserController {
     public Mono<UserResponseDTO> getUserByDni(
             @Parameter(description = "User DNI (National ID)", example = "12345678")
             @PathVariable String dni) {
-        return userService.getUserByDni(dni);
+        return userService.getUserByDni(dni)
+            .doOnNext(response -> log.debug("Returning user: {}", response))
+            .doOnError(error -> log.error("Error getting user by DNI: {}", error.getMessage()));
     }
 }

@@ -1,26 +1,31 @@
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    path: ${BASE_PATH_USERS:/swagger-ui.html}
   api-docs:
-    path: /v3/api-docs
+    path: ${BASE_PATH_USERS:/v3/api-docs}
 
 server:
-  port: 8081
+  port: ${SERVER_PORT_USERS:8081}
 
 spring:
   application:
-    name: banking-users-service
+    name: ${APPLICATION_NAME:banking-users-service}
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: banking_users
-      auto-index-creation: true
+      host: ${MONGODB_HOST:localhost}
+      port: ${MONGODB_PORT:27017}
+      database: ${MONGODB_DATABASE:banking_users}
+      username: ${MONGODB_USERNAME:}
+      password: ${MONGODB_PASSWORD:}
+      authentication-database: ${MONGODB_AUTH_DATABASE:admin}
+      auto-index-creation: ${MONGODB_AUTO_INDEX:true}
   webflux:
-    base-path: /banking-users-service
+    base-path: ${BASE_PATH_USERS:/banking-users-service}
 
 logging:
   level:
     io.banking.whatsapp: DEBUG
-    org.springframework.data.mongodb: DEBUG  # Changed to DEBUG to see more details
-    org.springframework.web: DEBUG           # Changed to DEBUG to see more details
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.web: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
