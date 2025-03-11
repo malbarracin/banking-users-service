@@ -1,0 +1,99 @@
+{
+  "info": {
+    "name": "Banking Users Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection for Banking Users Service API endpoints"
+  },
+  "item": [
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/users",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phoneNumber\": \"+1234567890\",\n    \"dni\": \"12345678\"\n}"
+        },
+        "description": "Creates a new user with the provided information"
+      }
+    },
+    {
+      "name": "Get User by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/v1/users/{{userId}}",
+        "description": "Retrieves user information by ID"
+      }
+    },
+    {
+      "name": "Get User by DNI",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/v1/users/dni/{{dni}}",
+        "description": "Retrieves user information by DNI"
+      }
+    },
+    {
+      "name": "Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/v1/users",
+        "description": "Retrieves all users"
+      }
+    },
+    {
+      "name": "Update User",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/users/{{userId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Smith\",\n    \"email\": \"john.smith@example.com\",\n    \"phoneNumber\": \"+1987654321\",\n    \"dni\": \"12345678\"\n}"
+        },
+        "description": "Updates an existing user"
+      }
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base_url}}/api/v1/users/{{userId}}",
+        "description": "Deletes a user by ID"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8081/banking-users-service",
+      "type": "string",
+      "description": "Base URL for the Users Service"
+    },
+    {
+      "key": "userId",
+      "value": "your-user-id-here",
+      "type": "string"
+    },
+    {
+      "key": "dni",
+      "value": "12345678",
+      "type": "string"
+    }
+  ]
+}

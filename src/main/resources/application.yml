@@ -1,0 +1,26 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: banking-users-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: banking_users
+      auto-index-creation: true
+  webflux:
+    base-path: /banking-users-service
+
+logging:
+  level:
+    io.banking.whatsapp: DEBUG
+    org.springframework.data.mongodb: DEBUG  # Changed to DEBUG to see more details
+    org.springframework.web: DEBUG           # Changed to DEBUG to see more details
