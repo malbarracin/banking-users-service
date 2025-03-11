@@ -24,8 +24,8 @@ spring:
 
 logging:
   level:
-    io.banking.whatsapp: DEBUG
-    org.springframework.data.mongodb: DEBUG
+    io.banking.whatsapp: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.data.mongodb:  ${LOG_LEVEL_MONGODB:DEBUG}
     org.springframework.web: TRACE
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

@@ -27,8 +27,10 @@ Microservice for banking system user management.
 Create a `.env` file in the project root:
 
 ```env
-# Service Port
+# Server Configuration
 SERVER_PORT_USERS=8081
+APPLICATION_NAME_USERS=banking-users-service
+BASE_PATH_USERS=/banking-users-service
 
 # MongoDB Configuration
 MONGODB_HOST=mongodb
@@ -36,6 +38,13 @@ MONGODB_PORT=27017
 MONGODB_DATABASE=banking
 MONGODB_USERNAME=root
 MONGODB_PASSWORD=example
+MONGODB_AUTH_DATABASE=admin
+MONGODB_AUTO_INDEX=true
+
+# Logging Configuration
+LOG_LEVEL_APP=DEBUG
+LOG_LEVEL_MONGODB=DEBUG
+LOG_LEVEL_WEB=DEBUG 
 ```
 
 ### 2. Application.yml Configuration
@@ -43,36 +52,37 @@ MONGODB_PASSWORD=example
 File location: `src/main/resources/application.yml`
 
 ```yaml
+springdoc:
+  swagger-ui:
+    path: ${BASE_PATH_USERS:/swagger-ui.html}
+  api-docs:
+    path: ${BASE_PATH_USERS:/v3/api-docs}
+
 server:
-  port: ${SERVER_PORT_USERS}
-  servlet:
-    context-path: /banking-users-service
+  port: ${SERVER_PORT_USERS:8081}
 
 spring:
   application:
-    name: banking-users-service
+    name: ${APPLICATION_NAME:banking-users-service}
   data:
     mongodb:
-      host: ${MONGODB_HOST}
-      port: ${MONGODB_PORT}
+      host: ${MONGODB_HOST:localhost}
+      port: ${MONGODB_PORT:27017}
       database: ${MONGODB_DATABASE}
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      authentication-database: admin
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-  api-docs:
-    path: /api-docs
-    enabled: true
+      authentication-database: ${MONGODB_AUTH_DATABASE}
+      auto-index-creation: ${MONGODB_AUTO_INDEX:true}
+  webflux:
+    base-path: ${BASE_PATH_USERS:/banking-users-service}
 
 logging:
   level:
-    io.banking.whatsapp: DEBUG
-    org.springframework.data.mongodb: DEBUG
-    org.springframework.web: DEBUG
+    io.banking.whatsapp: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.data.mongodb:  ${LOG_LEVEL_MONGODB:DEBUG}
+    org.springframework.web: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 ```
 
 ## Installation & Deployment
