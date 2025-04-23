@@ -9,14 +9,14 @@ server:
 
 spring:
   application:
-    name: ${APPLICATION_NAME:banking-users-service}
+    name: ${APPLICATION_USER_NAME:banking-users-service}
   data:
     mongodb:
       host: ${MONGODB_HOST:localhost}
       port: ${MONGODB_PORT:27017}
-      database: ${MONGODB_DATABASE:banking_users}
-      username: ${MONGODB_USERNAME:}
-      password: ${MONGODB_PASSWORD:}
+      database: ${MONGODB_DATABASE:banking_chanel}
+      username: ${MONGODB_USERNAME:admin}
+      password: ${MONGODB_PASSWORD:admin}
       authentication-database: ${MONGODB_AUTH_DATABASE:admin}
       auto-index-creation: ${MONGODB_AUTO_INDEX:true}
   webflux:
