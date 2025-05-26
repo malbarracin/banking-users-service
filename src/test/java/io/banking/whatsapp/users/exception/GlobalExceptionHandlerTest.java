@@ -10,7 +10,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import reactor.core.publisher.Mono;
+
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -122,9 +122,10 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponseDTO> response = exceptionHandler.handleUserException(userException);
 
         // Assert
-        assertNotNull(response.getBody());
-        assertNotNull(response.getBody().getTimestamp());
-        assertTrue(response.getBody().getTimestamp().isBefore(response.getBody().getTimestamp().plusSeconds(1)));
+        ErrorResponseDTO errorResponse = response.getBody();
+        assertNotNull(errorResponse);
+        assertNotNull(errorResponse.getTimestamp());
+        assertTrue(errorResponse.getTimestamp().isBefore(errorResponse.getTimestamp().plusSeconds(1)));
     }
 
     /**
