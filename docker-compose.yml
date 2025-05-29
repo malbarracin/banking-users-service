@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   banking-users-service:
-    image: marceloalbarracin/banking-users-service:1.0.2
     build:
       context: .
       dockerfile: Dockerfile

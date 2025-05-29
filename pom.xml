@@ -11,7 +11,7 @@
     
     <groupId>io.banking.whatsapp</groupId>
     <artifactId>banking-users-service</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <name>banking-users-service</name>
     <description>Banking Users Service for WhatsApp Banking</description>
 
